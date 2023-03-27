@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth import get_user_model, authenticate
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers, exceptions
@@ -20,23 +21,13 @@ class CustomUserSerializer(UserCreateSerializer):
         model = User
         fields = ('email', 'id', 'username', 'first_name', 'last_name', 'password')
 
+    def validate_username(self, username):
+        if not re.match(r'^[a-zA-Z0-9-_]+$', username):
+            raise serializers.ValidationError('Недопустимые символы username.')
+
+        return username
+
 
 class EmailTokenObtainSerializer(TokenObtainSerializer):
     username_field = User.EMAIL_FIELD
-
-
-class CustomTokenObtainPairSerializer(EmailTokenObtainSerializer):
-    @classmethod
-    def get_token(cls, user):
-        return RefreshToken.for_user(user)
-
-    def validate(self, attrs):
-        data = super().validate(attrs)
-
-        refresh = self.get_token(self.user)
-
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
-
-        return data
 
