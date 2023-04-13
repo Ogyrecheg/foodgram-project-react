@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -36,3 +37,4 @@ class Follow(models.Model):
                 name='uniq_user_and_author'
             )
         ]
+

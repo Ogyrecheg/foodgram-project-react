@@ -29,6 +29,23 @@ class CustomUserSerializer(UserCreateSerializer):
 
 
 class CustomFollowUserSerializer(CustomUserSerializer):
+    email = serializers.EmailField(max_length=254, required=True)
+    username = serializers.CharField(max_length=150, required=True)
+    first_name = serializers.CharField(max_length=150, required=True)
+    last_name = serializers.CharField(max_length=150, required=True)
+    is_subscribed = serializers.SerializerMethodField(default=False, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed')
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+
+        return Follow.objects.filter(user=request.user.id, author=obj).exists()
+
+
+class SubscriptionsSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(default=False, read_only=True)
 
     class Meta:
@@ -91,3 +108,15 @@ class FollowSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
 
         return CustomFollowUserSerializer(instance.author, context={'request': self.context.get('request')}).data
+
+    def validate(self, data):
+        if Follow.objects.filter(
+            user=data['user'],
+            author=data['author'],
+        ):
+            raise serializers.ValidationError('Ошибка подписки: Вы уже подписаны на данного пользователя!')
+
+        if data['user'] == data['author']:
+            raise serializers.ValidationError('Ошибка подписки: нельзя подписаться сам на себя !')
+
+        return data

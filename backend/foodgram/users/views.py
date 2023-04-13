@@ -1,19 +1,19 @@
-from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
-from rest_framework_simplejwt.tokens import AccessToken
+
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .models import User
+from .models import User, Follow
 from .pagination import CustomUserPagination
-from .serializers import CustomUserSerializer, EmailTokenObtainSerializer, CustomAuthTokenSerializer, FollowSerializer
+from .serializers import CustomUserSerializer, EmailTokenObtainSerializer, CustomAuthTokenSerializer, FollowSerializer, \
+    CustomFollowUserSerializer, SubscriptionsSerializer
 
 
 class CustomUserViewSet(UserViewSet):
@@ -24,17 +24,6 @@ class CustomUserViewSet(UserViewSet):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainSerializer
-
-
-class LogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        tokens = OutstandingToken.objects.filter(user_id=request.user.id)
-        for token in tokens:
-            t, _ = BlacklistedToken.objects.get_or_create(token=token)
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -52,12 +41,12 @@ class CustomObtainAuthToken(ObtainAuthToken):
 
 class Logout(APIView):
     def post(self, request):
-        # simply delete the token to force a login
         request.user.auth_token.delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class Follow(APIView):
+class FollowView(APIView):
     def post(self, request, id):
         user_id = request.user.id
         author_id = id
@@ -70,3 +59,34 @@ class Follow(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        user_id = request.user.id
+        author_id = id
+        follow = Follow.objects.filter(user=user_id, author=author_id)
+
+        if not follow.exists():
+
+            return Response('Вы не подписаны на данного автора!', status=status.HTTP_400_BAD_REQUEST)
+
+        follow.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def subscriptions(request):
+    user = request.user
+    follows = User.objects.filter(author__user=user)
+    paginator = CustomUserPagination()
+    result = paginator.paginate_queryset(follows, request, view=None)
+
+    serializer = SubscriptionsSerializer(
+        result,
+        many=True,
+        context={'request': request},
+    )
+
+    return paginator.get_paginated_response(serializer.data)
+
