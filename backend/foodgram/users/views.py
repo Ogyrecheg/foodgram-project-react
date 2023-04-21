@@ -6,20 +6,20 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 from .models import User, Follow
 from .pagination import CustomUserPagination
 from .serializers import CustomUserSerializer, EmailTokenObtainSerializer, CustomAuthTokenSerializer, FollowSerializer, \
-    CustomFollowUserSerializer, SubscriptionsSerializer
+    CustomFollowUserSerializer
 
 
-class CustomUserViewSet(UserViewSet):
-    pagination_class = CustomUserPagination
-    queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
+# class CustomUserViewSet(UserViewSet):
+#     pagination_class = CustomUserPagination
+#     queryset = User.objects.all()
+#     serializer_class = CustomUserSerializer
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -82,7 +82,7 @@ def subscriptions(request):
     paginator = CustomUserPagination()
     result = paginator.paginate_queryset(follows, request, view=None)
 
-    serializer = SubscriptionsSerializer(
+    serializer = CustomFollowUserSerializer(
         result,
         many=True,
         context={'request': request},
