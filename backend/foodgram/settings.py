@@ -1,15 +1,14 @@
 import os
 
-
 AUTH_USER_MODEL = 'users.User'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'g+s^((1bj2n33!8e8xrjag+@gdlf3@a2u*8%w1*0uc$*a%&d1!'
+SECRET_KEY = os.getenv('SECRET_KEY', default='g+s^((1bj2n33!8e8xrjag+@gdlf3@a2u*8%w1*0uc$*a%&d1!')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', ]
 
 
 INSTALLED_APPS = [
@@ -21,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
+    'api.apps.ApiConfig',
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',
@@ -122,9 +122,9 @@ DJOSER = {
         'user_list': ['rest_framework.permissions.AllowAny'],
     },
     'SERIALIZERS': {
-        'user_create': 'users.serializers.CustomUserSerializer',
-        'current_user': 'users.serializers.CustomFollowUserSerializer',
-        'user': 'users.serializers.CustomFollowUserSerializer',
+        'user_create': 'api.serializers.CustomUserSerializer',
+        'current_user': 'api.serializers.CustomFollowUserSerializer',
+        'user': 'api.serializers.CustomFollowUserSerializer',
     }
 }
 

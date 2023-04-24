@@ -1,19 +1,19 @@
 from django.contrib import admin
 
-from .models import (Tags, Ingredients, Recipes, IngredientsForRecipes,
-                     FavoriteRecipes, ShoppingCarts)
+from .models import (FavoriteRecipe, Ingredient, IngredientForRecipe, Recipe,
+                     ShoppingCart, Tag)
 
 
-class TagsInLine(admin.TabularInline):
-    model = Recipes.tags.through
+class TagInLine(admin.TabularInline):
+    model = Recipe.tags.through
 
 
-class IngredientsInLine(admin.TabularInline):
-    model = Recipes.ingredients.through
+class IngredientInLine(admin.TabularInline):
+    model = Recipe.ingredients.through
 
 
-@admin.register(Tags)
-class TagsAdmin(admin.ModelAdmin):
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
@@ -23,8 +23,8 @@ class TagsAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
-@admin.register(Ingredients)
-class IngredientsAdmin(admin.ModelAdmin):
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
@@ -34,8 +34,8 @@ class IngredientsAdmin(admin.ModelAdmin):
     list_filter = ('name',)
 
 
-@admin.register(Recipes)
-class RecipesAdmin(admin.ModelAdmin):
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
@@ -49,14 +49,14 @@ class RecipesAdmin(admin.ModelAdmin):
         'author',
         'tags',
     )
-    inlines = [TagsInLine, IngredientsInLine]
+    inlines = [TagInLine, IngredientInLine]
 
     def favorite(self, obj):
-        return FavoriteRecipes.objects.filter(recipe=obj).count()
+        return FavoriteRecipe.objects.filter(recipe=obj).count()
 
 
-@admin.register(IngredientsForRecipes)
-class IngredientsForRecipes(admin.ModelAdmin):
+@admin.register(IngredientForRecipe)
+class IngredientForRecipe(admin.ModelAdmin):
     list_display = (
         'id',
         'recipe',
@@ -66,8 +66,8 @@ class IngredientsForRecipes(admin.ModelAdmin):
     search_fields = ('recipe',)
 
 
-@admin.register(FavoriteRecipes)
-class FavoriteRecipesAdmin(admin.ModelAdmin):
+@admin.register(FavoriteRecipe)
+class FavoriteRecipeAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'user',
@@ -76,8 +76,8 @@ class FavoriteRecipesAdmin(admin.ModelAdmin):
     search_fields = ('user',)
 
 
-@admin.register(ShoppingCarts)
-class ShoppingCartsAdmin(admin.ModelAdmin):
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'user',

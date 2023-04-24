@@ -1,13 +1,13 @@
 import django_filters
 
-from .models import Recipes, Tags
+from recipes.models import Recipe, Tag
 
 
 class CustomRecipeFilter(django_filters.FilterSet):
     tags = django_filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',
-        queryset=Tags.objects.all(),
+        queryset=Tag.objects.all(),
     )
     is_favorited = django_filters.BooleanFilter(
         method='is_favorited_func',
@@ -17,7 +17,7 @@ class CustomRecipeFilter(django_filters.FilterSet):
     )
 
     class Meta:
-        model = Recipes
+        model = Recipe
         fields = ['tags', 'author', 'is_favorited', 'is_in_shopping_cart']
 
     def is_favorited_func(self, queryset, name, value):
