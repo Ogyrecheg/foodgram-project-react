@@ -165,6 +165,15 @@ class FavoriteRecipeSerializer(serializers.ModelSerializer):
             context={'request': self.context.get('request')}
         ).data
 
+    def validate(self, data):
+        if FavoriteRecipe.objects.filter(
+                user=data['user'],
+                recipe=data['recipe'],
+        ):
+            raise serializers.ValidationError('Вы уже добавили в избранное данный рецепт!')
+
+        return data
+
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     """Сериализатор рецептов из списка покупок."""
@@ -178,6 +187,15 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
             instance.recipe,
             context={'request': self.context.get('request')}
         ).data
+
+    def validate(self, data):
+        if ShoppingCart.objects.filter(
+                user=data['user'],
+                recipe=data['recipe'],
+        ):
+            raise serializers.ValidationError('Вы уже добавили в cписок покупок данный рецепт!')
+
+        return data
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -270,7 +288,23 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('tags', 'image', 'author', 'ingredients', 'name', 'text', 'cooking_time')
+        fields = (
+            'tags', 'image', 'author',
+            'ingredients', 'name', 'text', 'cooking_time'
+        )
+
+    def validated_text(self, value):
+        if len(value) > 200:
+            raise serializers.ValidationError(
+                'Описание рецепта не должно быть больше 200 символов'
+            )
+
+    def validated_cooking_time(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                'Значение времени приготовления рецепта должно быть больше либо равно 1')
+
+        return value
 
     @staticmethod
     def make_ingredient_for_recipe_obj(ingredients, recipe):
