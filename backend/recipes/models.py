@@ -44,7 +44,6 @@ class Ingredient(models.Model):
     name = models.CharField(
         max_length=200,
         verbose_name='ингредиент',
-        # unique=True,
     )
     measurement_unit = models.CharField(
         max_length=200,
@@ -56,7 +55,7 @@ class Ingredient(models.Model):
             models.UniqueConstraint(
                 fields=['name', 'measurement_unit'],
                 name='uniq_name_and_measurement_unit'
-             )
+            )
         ]
         ordering = ['name']
         verbose_name = 'Ингредиент'
