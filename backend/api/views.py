@@ -13,20 +13,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
                             Recipe, ShoppingCart, Tag)
 from users.models import Follow, User
-
 from .filters import CustomRecipeFilter
 from .pagination import CustomUserPagination
 from .permissions import OwnerOrAdmin
 from .serializers import (CustomAuthTokenSerializer,
                           CustomFollowUserSerializer,
-                          EmailTokenObtainSerializer, FavoriteRecipeSerializer,
+                          FavoriteRecipeSerializer,
                           FollowSerializer, IngredientSerializer,
                           RecipeCreateSerializer, RecipeSerializer,
                           ShoppingCartSerializer, TagSerializer)
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = EmailTokenObtainSerializer
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -51,9 +46,7 @@ class Logout(APIView):
 
 class FollowView(APIView):
     def post(self, request, id):
-        user_id = request.user.id
-        author_id = id
-        data = {'user': user_id, 'author': author_id}
+        data = {'user': request.user.id, 'author': id}
         serializer = FollowSerializer(data=data, context={'request': request}
                                       )
         if serializer.is_valid():
@@ -64,9 +57,7 @@ class FollowView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        user_id = request.user.id
-        author_id = id
-        follow = Follow.objects.filter(user=user_id, author=author_id)
+        follow = Follow.objects.filter(user=request.user.id, author=id)
 
         if not follow.exists():
 
@@ -80,8 +71,7 @@ class FollowView(APIView):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def subscriptions(request):
-    user = request.user
-    follows = User.objects.filter(author__user=user)
+    follows = User.objects.filter(author__user=request.user)
     paginator = CustomUserPagination()
     result = paginator.paginate_queryset(follows, request, view=None)
 
@@ -173,9 +163,7 @@ class FavoriteAPIView(APIView):
     """Вью-класс на добавление/удаление рецепта в/из избранное(ого)."""
 
     def post(self, request, id):
-        user_id = request.user.id
-        recipe_id = id
-        data = {'user': user_id, 'recipe': recipe_id}
+        data = {'user': request.user.id, 'recipe': id}
         serializer = FavoriteRecipeSerializer(data=data, context={'request': request})
 
         if serializer.is_valid():
@@ -186,9 +174,7 @@ class FavoriteAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        user_id = request.user.id
-        recipe_id = id
-        selected_bundle = FavoriteRecipe.objects.filter(user=user_id, recipe=recipe_id)
+        selected_bundle = FavoriteRecipe.objects.filter(user=request.user.id, recipe=id)
 
         if not selected_bundle.exists():
 
@@ -203,9 +189,7 @@ class ShoppingCartAPIView(APIView):
     """Вью-класс на добавление/удаление рецепта в/из список(а) покупок."""
 
     def post(self, request, id):
-        user_id = request.user.id
-        recipe_id = id
-        data = {'user': user_id, 'recipe': recipe_id}
+        data = {'user': request.user.id, 'recipe': id}
         serializer = ShoppingCartSerializer(data=data, context={'request': request})
 
         if serializer.is_valid():
@@ -216,9 +200,7 @@ class ShoppingCartAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        user_id = request.user.id
-        recipe_id = id
-        selected_bundle = ShoppingCart.objects.filter(user=user_id, recipe=recipe_id)
+        selected_bundle = ShoppingCart.objects.filter(user=request.user.id, recipe=id)
 
         if not selected_bundle.exists():
 
