@@ -36,4 +36,3 @@ class Follow(models.Model):
                 name='uniq_user_and_author'
             )
         ]
-

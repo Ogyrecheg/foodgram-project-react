@@ -18,6 +18,14 @@ urlpatterns = [
     path('auth/token/logout/', Logout.as_view(), name='logout'),
     path('', include('djoser.urls')),
     path('', include(router.urls)),
-    path('recipes/<int:id>/favorite/', FavoriteAPIView.as_view(), name='favorite'),
-    path('recipes/<int:id>/shopping_cart/', ShoppingCartAPIView.as_view(), name='shopping_carts'),
+    path(
+        'recipes/<int:id>/favorite/',
+        FavoriteAPIView.as_view(),
+        name='favorite'
+    ),
+    path(
+        'recipes/<int:id>/shopping_cart/',
+        ShoppingCartAPIView.as_view(),
+        name='shopping_carts'
+    ),
 ]

@@ -8,7 +8,6 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
                             Recipe, ShoppingCart, Tag)
@@ -61,7 +60,10 @@ class FollowView(APIView):
 
         if not follow.exists():
 
-            return Response('Вы не подписаны на данного автора!', status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                'Вы не подписаны на данного автора!',
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         follow.delete()
 
@@ -164,7 +166,10 @@ class FavoriteAPIView(APIView):
 
     def post(self, request, id):
         data = {'user': request.user.id, 'recipe': id}
-        serializer = FavoriteRecipeSerializer(data=data, context={'request': request})
+        serializer = FavoriteRecipeSerializer(
+            data=data,
+            context={'request': request}
+        )
 
         if serializer.is_valid():
             serializer.save()
@@ -174,11 +179,17 @@ class FavoriteAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        selected_bundle = FavoriteRecipe.objects.filter(user=request.user.id, recipe=id)
+        selected_bundle = FavoriteRecipe.objects.filter(
+            user=request.user.id,
+            recipe=id
+        )
 
         if not selected_bundle.exists():
 
-            return Response('Данный рецепт не находится в избранном!', status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                'Данный рецепт не находится в избранном!',
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         selected_bundle.delete()
 
@@ -190,7 +201,10 @@ class ShoppingCartAPIView(APIView):
 
     def post(self, request, id):
         data = {'user': request.user.id, 'recipe': id}
-        serializer = ShoppingCartSerializer(data=data, context={'request': request})
+        serializer = ShoppingCartSerializer(
+            data=data,
+            context={'request': request}
+        )
 
         if serializer.is_valid():
             serializer.save()
@@ -200,11 +214,17 @@ class ShoppingCartAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        selected_bundle = ShoppingCart.objects.filter(user=request.user.id, recipe=id)
+        selected_bundle = ShoppingCart.objects.filter(
+            user=request.user.id,
+            recipe=id,
+        )
 
         if not selected_bundle.exists():
 
-            return Response('Данный рецепт не находится в cписке покупок!', status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                'Данный рецепт не находится в cписке покупок!',
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         selected_bundle.delete()
 
