@@ -10,7 +10,7 @@ services:
       - ./.env
 
   backend:
-    image: ogyrecheg/backend
+    image: ogyrecheg/backend:latest
 
     restart: always
 
