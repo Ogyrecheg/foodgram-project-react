@@ -1,7 +1,6 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
-
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -10,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from users.models import Follow, User
+from users.models import User, Follow
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
                             Recipe, ShoppingCart, Tag)
 from .filters import CustomRecipeFilter
