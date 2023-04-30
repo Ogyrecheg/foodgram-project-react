@@ -48,7 +48,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ogyrecheg/backend:latest
+          tags: ogyrecheg/backend:v1
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,9 +62,11 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull ogyrecheg/backend
-            sudo docker compose stop
-            sudo docker compose rm backend
+#            sudo docker pull ogyrecheg/backend:v1
+#            sudo docker compose stop
+#            sudo docker compose rm backend
+            sudo docker compose down
+            sudo docker rmi ogyrecheg/backend:v1
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
@@ -73,4 +75,4 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-            sudo docker compose up -d
+            sudo docker compose up -d --build
