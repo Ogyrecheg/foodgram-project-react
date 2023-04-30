@@ -1,6 +1,8 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
+                            Recipe, ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -8,16 +10,13 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
-                            Recipe, ShoppingCart, Tag)
 from users.models import Follow, User
+
 from .filters import CustomRecipeFilter
 from .pagination import CustomUserPagination
 from .permissions import OwnerOrAdmin
 from .serializers import (CustomAuthTokenSerializer,
-                          CustomFollowUserSerializer,
-                          FavoriteRecipeSerializer,
+                          CustomFollowUserSerializer, FavoriteRecipeSerializer,
                           FollowSerializer, IngredientSerializer,
                           RecipeCreateSerializer, RecipeSerializer,
                           ShoppingCartSerializer, TagSerializer)

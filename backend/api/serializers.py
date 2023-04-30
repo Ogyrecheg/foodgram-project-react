@@ -4,12 +4,11 @@ import re
 from django.contrib.auth import authenticate
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
+                            Recipe, ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.validators import UniqueTogetherValidator
-
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
-                            Recipe, ShoppingCart, Tag)
 from users.models import Follow, User
 
 
