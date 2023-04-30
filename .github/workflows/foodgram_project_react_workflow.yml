@@ -63,6 +63,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker pull ogyrecheg/backend
+            sudo docker pull ogyrecheg/frontend
             sudo docker compose stop
             sudo docker compose rm backend
             touch .env
