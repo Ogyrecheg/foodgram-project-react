@@ -25,7 +25,7 @@ services:
       - ./.env
 
   frontend:
-    image: ogyrecheg/frontend
+    image: ogyrecheg/frontend:v1
 
     volumes:
       - ../frontend/:/app/result_build/
