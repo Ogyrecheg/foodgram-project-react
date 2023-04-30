@@ -10,9 +10,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from users.models import Follow, User
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
                             Recipe, ShoppingCart, Tag)
+from users.models import Follow, User
 
 from .filters import CustomRecipeFilter
 from .pagination import CustomUserPagination
