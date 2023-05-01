@@ -12,7 +12,7 @@ services:
       - "5432:5432"
 
   backend:
-    build: ../backend/
+    image: ogyrecheg/backend:v1
 
     restart: always
 
@@ -29,7 +29,7 @@ services:
       - ./.env
 
   frontend:
-    build: ../frontend/
+    image: ogyrecheg/frontend:v1
 
     volumes:
       - ./frontend/:/app/result_build/
