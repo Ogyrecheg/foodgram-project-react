@@ -48,7 +48,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ogyrecheg/backend:v1
+          tags: ogyrecheg/backend:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull ogyrecheg/backend:v1
+            sudo docker pull ogyrecheg/backend:latest
             sudo docker compose stop
             sudo docker compose rm backend
             touch .env

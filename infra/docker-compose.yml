@@ -12,7 +12,7 @@ services:
       - "5432:5432"
 
   backend:
-    image: ogyrecheg/backend:v1
+    image: ogyrecheg/backend:latest
 
     restart: always
 
