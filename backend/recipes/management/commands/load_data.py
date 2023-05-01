@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
         bulk_data = []
         for row in DictReader(
-                open('../data/ingredients.csv', encoding='utf-8'),
+                open('ingredients.csv', encoding='utf-8'),
                 fieldnames=('name', 'measurement_unit')):
             bulk_data.append(Ingredient(
                 name=row['name'],

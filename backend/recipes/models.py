@@ -18,7 +18,7 @@ class Tag(models.Model):
         unique=True,
         validators=[
             RegexValidator(
-                regex='^[#](\w+){7}$',
+                regex='^[#]',
                 message='Неправильный формат HEX кода!'
             )
         ]
