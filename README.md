@@ -77,6 +77,8 @@ admin@mail.com , 12345
 ### Автор проекта:
 студент когорты №17 Шевченко А.И
 
-![work_flow](https://github.com/Ogyrecheg/foodgram-project-react/actions/workflows/yamdb_workflow.yml/badge.svg)
+![work_flow](https://github.com/Ogyrecheg/foodgram-project-react/actions/workflows/foodgram_project_react_workflow.yml/badge.svg)
+
+https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE>/badge.svg
 
 
