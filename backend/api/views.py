@@ -13,7 +13,7 @@ from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
                             Recipe, ShoppingCart, Tag)
 from users.models import Follow, User
 
-from .filters import CustomRecipeFilter
+from .filters import CustomIngredientFilter, CustomRecipeFilter
 from .pagination import CustomUserPagination
 from .permissions import OwnerOrAdmin
 from .serializers import (CustomAuthTokenSerializer,
@@ -101,8 +101,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('^name',)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = CustomIngredientFilter
     pagination_class = None
 
 
