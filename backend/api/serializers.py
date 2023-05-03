@@ -58,12 +58,6 @@ class CustomFollowUserSerializer(CustomUserSerializer):
         default=False,
         read_only=True
     )
-    recipes = serializers.SerializerMethodField(
-        read_only=True,
-    )
-    recipes_count = serializers.SerializerMethodField(
-        read_only=True,
-    )
 
     class Meta:
         model = User
@@ -121,8 +115,8 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_recipes(self, obj):
-        recipes = Recipe.objects.filter(author=obj)
-        return AdditionalRecipeSerializer(recipes, many=True)
+        recipes = Recipe.objects.filter(author=obj)[:3]
+        return AdditionalRecipeSerializer(recipes, many=True).data
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()

@@ -71,7 +71,7 @@ class FollowView(APIView):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([OwnerOrAdmin])
 def subscriptions(request):
     follows = User.objects.filter(author__user=request.user)
     paginator = CustomUserPagination()

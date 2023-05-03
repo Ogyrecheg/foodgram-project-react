@@ -9,15 +9,15 @@ class CustomIngredientFilter(filters.SearchFilter):
 
 
 class CustomRecipeFilter(django_filters.FilterSet):
-    tags = django_filters.ModelMultipleChoiceFilter(
+    tags = django_filters.rest_framework.ModelMultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',
         queryset=Tag.objects.all(),
     )
-    is_favorited = django_filters.BooleanFilter(
+    is_favorited = django_filters.rest_framework.BooleanFilter(
         method='is_favorited_func',
     )
-    is_in_shopping_cart = django_filters.BooleanFilter(
+    is_in_shopping_cart = django_filters.rest_framework.BooleanFilter(
         method='is_in_shopping_cart_func'
     )
 
@@ -28,13 +28,13 @@ class CustomRecipeFilter(django_filters.FilterSet):
     def is_favorited_func(self, queryset, name, value):
         if value:
 
-            return queryset.filter(selected=self.request.user)
+            return queryset.filter(selected__user=self.request.user)
 
         return queryset
 
     def is_in_shopping_cart_func(self, queryset, name, value):
         if value:
 
-            return queryset.filter(shopping_cart__user=self.request.user)
+            return queryset.filter(shopping_recipes__user=self.request.user)
 
         return queryset
