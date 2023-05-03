@@ -17,10 +17,10 @@ from .filters import CustomIngredientFilter, CustomRecipeFilter
 from .pagination import CustomUserPagination
 from .permissions import OwnerOrAdmin
 from .serializers import (CustomAuthTokenSerializer,
-                          CustomFollowUserSerializer, FavoriteRecipeSerializer,
-                          FollowSerializer, IngredientSerializer,
-                          RecipeCreateSerializer, RecipeSerializer,
-                          ShoppingCartSerializer, TagSerializer)
+                          FavoriteRecipeSerializer, FollowSerializer,
+                          IngredientSerializer, RecipeCreateSerializer,
+                          RecipeSerializer, ShoppingCartSerializer,
+                          SubscriptionsSerializer, TagSerializer)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -77,7 +77,7 @@ def subscriptions(request):
     paginator = CustomUserPagination()
     result = paginator.paginate_queryset(follows, request, view=None)
 
-    serializer = CustomFollowUserSerializer(
+    serializer = SubscriptionsSerializer(
         result,
         many=True,
         context={'request': request},
