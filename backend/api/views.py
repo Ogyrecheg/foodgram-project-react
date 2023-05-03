@@ -16,11 +16,11 @@ from users.models import Follow, User
 from .filters import CustomIngredientFilter, CustomRecipeFilter
 from .pagination import CustomUserPagination
 from .permissions import OwnerOrAdmin
-from .serializers import (CustomAuthTokenSerializer,
-                          FavoriteRecipeSerializer, FollowSerializer,
-                          IngredientSerializer, RecipeCreateSerializer,
-                          RecipeSerializer, ShoppingCartSerializer,
-                          SubscriptionsSerializer, TagSerializer)
+from .serializers import (CustomAuthTokenSerializer, FavoriteRecipeSerializer,
+                          FollowSerializer, IngredientSerializer,
+                          RecipeCreateSerializer, RecipeSerializer,
+                          ShoppingCartSerializer, SubscriptionsSerializer,
+                          TagSerializer)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
