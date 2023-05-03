@@ -13,6 +13,12 @@ from recipes.models import (FavoriteRecipe, Ingredient, IngredientForRecipe,
 from users.models import Follow, User
 
 
+class AdditionalRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+
+
 class CustomUserSerializer(UserCreateSerializer):
     email = serializers.EmailField(max_length=254, required=True)
     username = serializers.CharField(max_length=150, required=True)
@@ -52,6 +58,12 @@ class CustomFollowUserSerializer(CustomUserSerializer):
         default=False,
         read_only=True
     )
+    recipes = serializers.SerializerMethodField(
+        read_only=True,
+    )
+    recipes_count = serializers.SerializerMethodField(
+        read_only=True,
+    )
 
     class Meta:
         model = User
@@ -80,6 +92,12 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         default=False,
         read_only=True
     )
+    recipes = serializers.SerializerMethodField(
+        read_only=True,
+    )
+    recipes_count = serializers.SerializerMethodField(
+        read_only=True,
+    )
 
     class Meta:
         model = User
@@ -90,6 +108,8 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'is_subscribed',
+            'recipes',
+            'recipes_count',
         )
 
     def get_is_subscribed(self, obj):
@@ -99,6 +119,13 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
             user=request.user.id,
             author=obj
         ).exists()
+
+    def get_recipes(self, obj):
+        recipes = Recipe.objects.filter(author=obj)
+        return AdditionalRecipeSerializer(recipes, many=True)
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj).count()
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):
@@ -150,7 +177,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
 
-        return CustomFollowUserSerializer(
+        return SubscriptionsSerializer(
             instance.author,
             context={'request': self.context.get('request')}
         ).data
